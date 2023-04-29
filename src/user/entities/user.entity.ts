@@ -1,15 +1,26 @@
 import {
+  BaseEntity,
   Column,
   CreateDateColumn,
   Entity,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { UserRole } from './user-role.enum';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDate, IsNumber, IsString, isNumber } from 'class-validator';
+import {
+  IsDate,
+  IsEmail,
+  IsEnum,
+  IsIn,
+  IsNumber,
+  IsOptional,
+  IsString,
+  Matches,
+} from 'class-validator';
+import { Type } from 'class-transformer';
+import UserRegExp from './user.regExp';
 
 @Entity()
-export class User {
+export class User extends BaseEntity {
   @IsNumber()
   @ApiProperty({ example: 1, description: '사용자 고유 id' })
   @PrimaryGeneratedColumn()
@@ -25,34 +36,40 @@ export class User {
   @Column({ nullable: false })
   name: string;
 
-  @IsString()
-  @ApiProperty({ example: 'user', description: '사용자 아이디' })
+  @Matches(UserRegExp.userIdRegExp, { message: 'userId format is invalid' })
+  @ApiProperty({ example: 'userid', description: '사용자 아이디' })
   @Column({ nullable: false, unique: true })
   userId: string;
 
-  @IsString()
+  @Matches(UserRegExp.passwordRegExp, { message: 'password format is invalid' })
   @ApiProperty({ example: 'password', description: '사용자 비밀번호' })
   @Column({ nullable: false })
   password: string;
 
-  @IsString()
+  @IsEmail()
+  @IsOptional()
   @ApiProperty({ example: 'testing@test.com', description: '사용자 이메일' })
   @Column()
   email: string;
 
-  @IsString()
+  @Matches(UserRegExp.phoneNumberRegExp, {
+    message: 'phoneNumber format is invalid',
+  })
   @ApiProperty({ example: '010-1234-5678', description: '사용자 전화번호' })
   @Column({ nullable: false, unique: true })
   phoneNumber: string;
 
+  @Type(() => Date)
   @IsDate()
+  @IsOptional()
   @ApiProperty({ example: '1990-01-01', description: '사용자 생년월일' })
-  @Column()
+  @Column({ nullable: true })
   birthday: Date;
 
-  @IsString()
+  @IsIn(['Male', 'Female'])
+  @IsOptional()
   @ApiProperty({ example: 'Male', description: "성별('Male' or 'Female')" })
-  @Column()
+  @Column({ nullable: true })
   gender: 'Male' | 'Female';
 
   @IsDate()
@@ -70,4 +87,29 @@ export class User {
   })
   @Column()
   socialChannel: string;
+
+  static fromJoinGeneral(userData: {
+    name: string;
+    userId: string;
+    password: string;
+    email?: string;
+    phoneNumber: string;
+    gender?: 'Male' | 'Female';
+    birthday?: Date;
+  }) {
+    const user = new User();
+
+    user.role = 'USER';
+    user.name = userData.name;
+    user.userId = userData.userId;
+    user.password = userData.password;
+    user.email = userData.email;
+    user.phoneNumber = userData.phoneNumber;
+    user.birthday = userData.birthday;
+    user.gender = userData.gender;
+    user.createdAt = new Date();
+    user.socialChannel = '';
+
+    return user;
+  }
 }
