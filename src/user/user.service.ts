@@ -25,7 +25,7 @@ export class UserService {
   async phoneCheck(phoneNumber: string): Promise<void> {
     const result = await this.usersRepository.findBy({ phoneNumber });
     if (result.length !== 0) {
-      // 중복된 휴대폰 있는 경우 400
+      // 중복된 휴대폰 번호 있는 경우 400
       throw new DupicatedException('phoneNumber', phoneNumber);
     }
   }
