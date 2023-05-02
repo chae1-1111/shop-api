@@ -1,9 +1,10 @@
-import { BadRequestException, HttpException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { JoinGeneralRequestDTO } from './dto/join-general-request.dto';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { DupicatedException } from './user.exception';
+import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class UserService {
@@ -30,18 +31,30 @@ export class UserService {
     }
   }
 
+  // 비밀번호 암호화
+  async encryptPassword(userData: JoinGeneralRequestDTO): Promise<void> {
+    userData.password = await bcrypt.hash(
+      userData.password,
+      bcrypt.genSaltSync(),
+    );
+    return Promise.resolve();
+  }
+
   // 회원가입
   async join(userData: JoinGeneralRequestDTO) {
-    const newUser = userData.toUserEntity();
-
     // 아이디, 휴대폰 중복 체크
     await this.idCheck(userData.userId);
     await this.phoneCheck(userData.phoneNumber);
 
+    // 비밀번호 암호화
+    await this.encryptPassword(userData);
+
+    const newUser = userData.toUserEntity();
+
     const { id } = await this.usersRepository.save(newUser);
 
     return {
-      // id: id,
+      id: id,
       name: userData.name,
       userId: userData.userId,
     };
