@@ -12,7 +12,7 @@ export class AuthService {
       loginRequest.getUserId(),
     );
 
-    // 비밀번호 일치 여부 확
+    // 비밀번호 일치 여부 확인
     const result = await bcrypt.compareSync(
       loginRequest.getPassword(),
       encryptedPassword,
