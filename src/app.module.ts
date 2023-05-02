@@ -3,9 +3,8 @@ import { UserModule } from './user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import ormconfig from './config/orm.config';
 import { User } from './user/entities/user.entity';
-import { AuthService } from './auth/auth.service';
 import { AuthModule } from './auth/auth.module';
-import { UserService } from './user/user.service';
+import { Auth } from './auth/entities/auth.entity';
 
 @Module({
   imports: [
@@ -14,7 +13,7 @@ import { UserService } from './user/user.service';
       // DB 설정
       type: 'mysql',
       ...ormconfig, // host, post, username, password, database
-      entities: [User],
+      entities: [User, Auth],
       synchronize: true,
       autoLoadEntities: true,
     }),

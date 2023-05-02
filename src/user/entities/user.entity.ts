@@ -3,6 +3,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
@@ -18,6 +19,7 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import UserRegExp from './user.regExp';
+import { Auth } from 'src/auth/entities/auth.entity';
 
 @Entity()
 export class User extends BaseEntity {
@@ -87,6 +89,9 @@ export class User extends BaseEntity {
   })
   @Column()
   socialChannel: string;
+
+  @OneToMany(() => Auth, (auth) => auth.user)
+  auths: Auth[];
 
   static fromJoinGeneral(userData: {
     name: string;
