@@ -4,6 +4,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import ormconfig from './config/ormconfig';
 import { User } from './user/entities/user.entity';
 import { AuthService } from './auth/auth.service';
+import { AuthModule } from './auth/auth.module';
+import { UserService } from './user/user.service';
 
 @Module({
   imports: [
@@ -16,8 +18,9 @@ import { AuthService } from './auth/auth.service';
       synchronize: true,
       autoLoadEntities: true,
     }),
+    AuthModule,
   ],
   controllers: [],
-  providers: [AuthService],
+  providers: [],
 })
 export class AppModule {}

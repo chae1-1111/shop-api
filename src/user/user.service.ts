@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { JoinGeneralRequestDTO } from './dto/join-general-request.dto';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -58,5 +58,21 @@ export class UserService {
       name: userData.name,
       userId: userData.userId,
     };
+  }
+
+  async getEncryptedPassword(userId: string): Promise<string> {
+    const user = await this.usersRepository.findOneBy({ userId });
+
+    // 아이디와 일치하는 사용자 없는 경우 Not Found Error
+    if (user === null || user === undefined) {
+      throw new NotFoundException({
+        errors: {
+          error: 'Login failed',
+          msg: 'Login failed : User not found matching the provided Id and Password.',
+        },
+      });
+    }
+
+    return user.password;
   }
 }
