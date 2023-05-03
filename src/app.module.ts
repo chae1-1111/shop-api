@@ -5,10 +5,12 @@ import ormconfig from './config/orm.config';
 import { User } from './user/entities/user.entity';
 import { AuthModule } from './auth/auth.module';
 import { Auth } from './auth/entities/auth.entity';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
     UserModule,
+    AuthModule,
     TypeOrmModule.forRoot({
       // DB 설정
       type: 'mysql',
@@ -17,7 +19,10 @@ import { Auth } from './auth/entities/auth.entity';
       synchronize: true,
       autoLoadEntities: true,
     }),
-    AuthModule,
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: './.env',
+    }),
   ],
   controllers: [],
   providers: [],

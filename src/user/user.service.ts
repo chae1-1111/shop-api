@@ -60,7 +60,10 @@ export class UserService {
     };
   }
 
-  async getEncryptedPassword(userId: string): Promise<string> {
+  // userId
+  async getUserByUserId(
+    userId: string,
+  ): Promise<{ encryptedPassword: string; id: number }> {
     const user = await this.usersRepository.findOneBy({ userId });
 
     // 아이디와 일치하는 사용자 없는 경우 Not Found Error
@@ -73,6 +76,6 @@ export class UserService {
       });
     }
 
-    return user.password;
+    return { encryptedPassword: user.password, id: user.id };
   }
 }

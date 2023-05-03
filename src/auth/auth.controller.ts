@@ -1,15 +1,16 @@
-import { Body, Controller, Get } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import LoginRequestDTO from './dto/login-request.dto';
 import { AuthService } from './auth.service';
+import LoginResponseDTO from './dto/login-response.dto';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Get()
-  async login(@Body() loginRequest: LoginRequestDTO): Promise<string> {
-    const result = await this.authService.login(loginRequest);
-
-    return 'result';
+  @Post()
+  async login(
+    @Body() loginRequest: LoginRequestDTO,
+  ): Promise<LoginResponseDTO> {
+    return await this.authService.login(loginRequest);
   }
 }
