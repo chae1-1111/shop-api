@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Headers, Post } from '@nestjs/common';
 import LoginRequestDTO from './dto/login-request.dto';
 import { AuthService } from './auth.service';
 import LoginResponseDTO from './dto/login-response.dto';
@@ -10,7 +10,8 @@ export class AuthController {
   @Post()
   async login(
     @Body() loginRequest: LoginRequestDTO,
+    @Headers('User-Agent') userAgent: string,
   ): Promise<LoginResponseDTO> {
-    return await this.authService.login(loginRequest);
+    return await this.authService.login(loginRequest, userAgent);
   }
 }

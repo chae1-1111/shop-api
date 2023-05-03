@@ -90,9 +90,6 @@ export class User extends BaseEntity {
   @Column()
   socialChannel: string;
 
-  @OneToMany(() => Auth, (auth) => auth.user)
-  auths: Auth[];
-
   static fromJoinGeneral(userData: {
     name: string;
     userId: string;

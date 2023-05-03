@@ -11,6 +11,13 @@ import {
 
 @Entity()
 export class Auth extends BaseEntity {
+  constructor(user: User, refreshToken: string, userAgent: string) {
+    super();
+    this.user = user;
+    this.refreshToken = refreshToken;
+    this.userAgent = userAgent;
+  }
+
   @IsNumber()
   @PrimaryGeneratedColumn()
   id: number;
@@ -20,7 +27,7 @@ export class Auth extends BaseEntity {
     example: 1,
     description: '사용자 고유 id',
   })
-  @ManyToOne(() => User, (user) => user.auths)
+  @ManyToOne(() => User, (user) => user.id)
   user: User;
 
   @IsString()
