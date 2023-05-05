@@ -10,8 +10,7 @@ export class AuthController {
   @Post()
   async login(
     @Body() loginRequest: LoginRequestDTO,
-    @Headers('User-Agent') userAgent: string,
   ): Promise<LoginResponseDTO> {
-    return await this.authService.login(loginRequest, userAgent);
+    return await this.authService.login(loginRequest);
   }
 }

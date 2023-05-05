@@ -1,21 +1,22 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsString } from 'class-validator';
+import { IsDate, IsNumber, IsString } from 'class-validator';
 import { User } from 'src/user/entities/user.entity';
 import {
   BaseEntity,
   Column,
+  CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
 @Entity()
 export class Auth extends BaseEntity {
-  constructor(user: User, refreshToken: string, userAgent: string) {
+  constructor(user: User, refreshToken: string) {
     super();
     this.user = user;
     this.refreshToken = refreshToken;
-    this.userAgent = userAgent;
   }
 
   @IsNumber()
@@ -28,6 +29,7 @@ export class Auth extends BaseEntity {
     description: '사용자 고유 id',
   })
   @ManyToOne(() => User, (user) => user.id)
+  @JoinColumn({ name: 'userId' })
   user: User;
 
   @IsString()
@@ -35,10 +37,10 @@ export class Auth extends BaseEntity {
     example: 'refreshToken',
     description: 'refresh token',
   })
-  @Column()
+  @Column('text')
   refreshToken: string;
 
-  @IsString()
-  @Column()
-  userAgent: string;
+  @IsDate()
+  @CreateDateColumn()
+  createdAt: Date;
 }
